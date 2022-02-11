@@ -95,20 +95,21 @@ public class AdaScript {
                 // -- payload end --
                 .showMessage("ADA")
                 // -- show address start --
+                // expanded human readable part of "addr"
                 .copyString("030303030001040412", Buffer.CACHE2)
-                .copyString("01", Buffer.CACHE1)
-                .copyArgument(receiverAddress, Buffer.CACHE1)
-                .baseConvert(ScriptData.getDataBufferAll(Buffer.CACHE1), Buffer.CACHE2, 92, ScriptAssembler.binary32Charset, ScriptAssembler.bitLeftJustify8to5)
+                // checksum to buffer 2
+                .setBufferInt(receiverAddressLength, 29, 57)
+                .baseConvert(receiverAddress, Buffer.CACHE2, 92, ScriptAssembler.binary32Charset, ScriptAssembler.bitLeftJustify8to5)
                 .copyString("000000000000", Buffer.CACHE2)
-                .clearBuffer(Buffer.CACHE1)
                 .bech32Polymod(ScriptData.getDataBufferAll(Buffer.CACHE2), Buffer.CACHE1)
                 .clearBuffer(Buffer.CACHE2)
-                .copyString(HexUtil.toHexString("addr1"), Buffer.CACHE2)
-                .copyString("01", Buffer.CACHE1)
-                .copyArgument(receiverAddress, Buffer.CACHE1) // EXTENDED : [Polymod(4B)][01(1B)][receiverAddress(56B)]
-                .baseConvert(ScriptData.getBuffer(Buffer.CACHE1, 4, 57), Buffer.CACHE2, 92, ScriptAssembler.base32BitcoinCashCharset, ScriptAssembler.bitLeftJustify8to5)
-                .baseConvert(ScriptData.getBuffer(Buffer.CACHE1, 0, 4), Buffer.CACHE2, 6, ScriptAssembler.base32BitcoinCashCharset, 0)
-                .showAddress(ScriptData.getDataBufferAll(Buffer.CACHE2))
+                .baseConvert(ScriptData.getDataBufferAll(Buffer.CACHE1), Buffer.CACHE2, 6, ScriptAssembler.base32BitcoinCashCharset, 0)
+                .clearBuffer(Buffer.CACHE1)
+                // data
+                .copyString(HexUtil.toHexString("addr1"), Buffer.CACHE1)
+                .baseConvert(receiverAddress, Buffer.CACHE1, 92, ScriptAssembler.base32BitcoinCashCharset, ScriptAssembler.bitLeftJustify8to5)
+                .copyArgument(ScriptData.getDataBufferAll(Buffer.CACHE2), Buffer.CACHE1)
+                .showAddress(ScriptData.getDataBufferAll(Buffer.CACHE1))
                 .clearBuffer(Buffer.CACHE2)
                 .clearBuffer(Buffer.CACHE1)
                 // -- show address end --
